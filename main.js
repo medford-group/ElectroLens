@@ -13,10 +13,14 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1920, height: 1080})
+  //mainWindow = new BrowserWindow({width: 1920, height: 1080})
+  mainWindow = new BrowserWindow({width: 1920, height: 1080, title: "ElectroLens", show:false, icon: path.join(__dirname, 'assets/icons/png/64x64.png')})
+  mainWindow.maximize()
+  mainWindow.show()
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
+    //pathname: path.join(__dirname, 'line_test.html'/*'three_2D3D_connection'*/),
     pathname: path.join(__dirname, 'index.html'/*'three_2D3D_connection'*/),
     protocol: 'file:',
     slashes: true
@@ -33,6 +37,9 @@ function createWindow () {
     mainWindow = null
   })
 }
+
+app.commandLine.appendSwitch('js-flags', '--max-old-space-size=16384');
+console.log('test')
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

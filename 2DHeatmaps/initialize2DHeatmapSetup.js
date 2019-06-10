@@ -1,9 +1,12 @@
 import {replotHeatmap} from "./HeatmapView.js";
 import {fullscreenOneView, deFullscreen} from "../MultiviewControl/calculateViewportSizes.js";
 import {insertLegend, removeLegend, changeLegend} from "../MultiviewControl/colorLegend.js";
+import {deselectAllSpatiallyResolvedData, selectAllSpatiallyResolvedData, deselectAllMoleculeData, selectAllMoleculeData, updateAllPlots} from "./Selection/Utilities.js";
+import {saveOverallMoleculeData, saveOverallSpatiallyResolvedData} from "../Utilities/saveData.js";
 export function initialize2DHeatmapSetup(viewSetup,views,plotSetup){
 	var defaultSetting = {
 		background: new THREE.Color( 0,0,0 ),
+		backgroundAlpha: 1.0,
 		controllerEnabledBackground: new THREE.Color( 0.1,0.1,0.1 ),
 		eye: [ 0, 0, 150 ],
 		up: [ 0, 0, 1 ],
@@ -20,15 +23,15 @@ export function initialize2DHeatmapSetup(viewSetup,views,plotSetup){
 		controllerPan : true,
 		xPlotScale : d3.scaleLinear().domain([0, 100]).range([-50,50]),
 		yPlotScale : d3.scaleLinear().domain([0, 100]).range([-50,50]),
+		overallSpatiallyResolvedDataBoolean: false,
+		overallMoleculeDataBoolean: false,
 		options: new function(){
 			this.backgroundColor = "#000000";
+			this.backgroundAlpha = 0.0;
+			this.plotData = "spatiallyResolvedData";
 			this.numPerSide = 100;
-			this.pointCloudAlpha = 1;
+			this.pointCloudAlpha = 1.0;
 			this.pointCloudSize = 3.0;
-			this.plotX = viewSetup.plotX;
-			this.plotY = viewSetup.plotY;
-			this.plotXTransform = viewSetup.plotXTransform;
-			this.plotYTransform = viewSetup.plotYTransform;
 			this.colorMap = 'rainbow';
 			this.resetCamera = function(){viewSetup.controller.reset();};
 			this.replotHeatmap = function(){replotHeatmap(viewSetup)};
@@ -60,6 +63,33 @@ export function initialize2DHeatmapSetup(viewSetup,views,plotSetup){
 										viewSetup.options.legendShownBoolean = !viewSetup.options.legendShownBoolean;
 									}
 								};
+			//this.planeSelection = function(){
+			//						planeSelection = !planeSelection;
+			//						pointSelection = false;
+			//					};
+			this.planeSelection = false;
+			this.brushSelection = false;
+			this.selectionBrushSize = 5;
+
+			this.plotXSpatiallyResolvedData = viewSetup.plotXSpatiallyResolvedData;
+			this.plotYSpatiallyResolvedData = viewSetup.plotYSpatiallyResolvedData;
+			this.plotXTransformSpatiallyResolvedData = viewSetup.plotXTransformSpatiallyResolvedData;
+			this.plotYTransformSpatiallyResolvedData = viewSetup.plotYTransformSpatiallyResolvedData;
+
+			this.plotXMoleculeData = viewSetup.plotXMoleculeData;
+			this.plotYMoleculeData = viewSetup.plotYMoleculeData;
+			this.plotXTransformMoleculeData = viewSetup.plotXTransformMoleculeData;
+			this.plotYTransformMoleculeData = viewSetup.plotYTransformMoleculeData;
+
+			this.selectAllSpatiallyResolvedData   = function(){selectAllSpatiallyResolvedData(views, viewSetup.overallSpatiallyResolvedData); updateAllPlots(views);}; 
+			this.deselectAllSpatiallyResolvedData = function(){deselectAllSpatiallyResolvedData(views, viewSetup.overallSpatiallyResolvedData);updateAllPlots(views);};
+
+			this.selectAllMoleculeData   = function(){selectAllMoleculeData(views, viewSetup.overallMoleculeData); updateAllPlots(views);}; 
+			this.deselectAllMoleculeData = function(){deselectAllMoleculeData(views, viewSetup.overallMoleculeData);updateAllPlots(views);};
+
+			this.saveOverallMoleculeData = function(){saveOverallMoleculeData(viewSetup,plotSetup)};
+			this.saveOverallSpatiallyResolvedData = function(){saveOverallSpatiallyResolvedData(viewSetup,plotSetup)};
+
 		}
 	}
 

@@ -1,9 +1,22 @@
 import {fullscreenOneView, deFullscreen} from "../MultiviewControl/calculateViewportSizes.js";
-import {insertLegend, removeLegend, changeLegend} from "../MultiviewControl/colorLegend.js";
+import {insertLegend, removeLegend, changeLegend, insertLegendMolecule, removeLegendMolecule, changeLegendMolecule} from "../MultiviewControl/colorLegend.js";
 import {addSystemEdge, removeSystemEdge} from "./systemEdge.js";
+import {saveSystemMoleculeData, saveSystemSpatiallyResolvedData} from "../Utilities/saveData.js";
 export function initialize3DViewSetup(viewSetup,views,plotSetup){
-	var gridSpacing = viewSetup.gridSpacing;
+	
 	var systemDimension = viewSetup.systemDimension;
+
+	if (viewSetup.spatiallyResolvedData != null) {
+		if (viewSetup.spatiallyResolvedData.gridSpacing != null){
+			var gridSpacing = viewSetup.spatiallyResolvedData.gridSpacing;
+		} else{
+			var gridSpacing = {"x":0.1,"y":0.1,"z":0.1};
+		}
+		
+	} else{
+		var gridSpacing = {"x":0.1,"y":0.1,"z":0.1};
+	}
+	
 	var xCoordMin = systemDimension["x"][0], xCoordMax = systemDimension["x"][1];
 	var yCoordMin = systemDimension["y"][0], yCoordMax = systemDimension["y"][1];
 	var zCoordMin = systemDimension["z"][0], zCoordMax = systemDimension["z"][1];
@@ -14,6 +27,8 @@ export function initialize3DViewSetup(viewSetup,views,plotSetup){
 	var yPlotMin = 0.0 - (ySteps/2.0), yPlotMax =  0.0 + (ySteps/2.0);
 	var zPlotMin = 0.0 - (zSteps/2.0), zPlotMax =  0.0 + (zSteps/2.0);
 
+	//plot gridspacing is 1
+
 
 
 	var defaultSetting = {
@@ -22,6 +37,7 @@ export function initialize3DViewSetup(viewSetup,views,plotSetup){
 		//width: 0.6,
 		//height: 0.5,
 		background: new THREE.Color( 0,0,0 ),
+		backgroundAlpha: 1.0,
 		controllerEnabledBackground: new THREE.Color( 0.1,0.1,0.1 ),
 		eye: [ 0, 0, 1200 ],
 		up: [ 0, 1, 0 ],
@@ -30,6 +46,8 @@ export function initialize3DViewSetup(viewSetup,views,plotSetup){
 		//viewType: '3Dview',
 		//moleculeName: 'CO2',
 		//dataFilename: "data/CO2_B3LYP_0_0_0_all_descriptors.csv",
+		systemSpatiallyResolvedDataBoolean : false,
+		systemMoleculeDataBoolean : false,
 		controllerEnabled: false,
 		controllerZoom : true,
 		controllerRotate : true,
@@ -51,6 +69,15 @@ export function initialize3DViewSetup(viewSetup,views,plotSetup){
 		zCoordMax : zCoordMax,
 		options: new function(){
 			this.backgroundColor = "#000000";
+			this.backgroundAlpha = 0.0;
+			this.showPointCloud = true;
+			this.showMolecule = true;
+			this.atomSize = 1.0;
+			this.bondSize = 1.0;
+			this.moleculeTransparency = 1.0;
+			this.maxBondLength = 1.5;
+			this.minBondLength = 0.3;
+			this.pointCloudTotalMagnitude = 2;
 			this.pointCloudParticles = 500;
 			this.pointCloudMaxPointPerBlock = 60;
 			this.pointCloudColorSettingMax = 1.2;
@@ -58,19 +85,11 @@ export function initialize3DViewSetup(viewSetup,views,plotSetup){
 			this.pointCloudAlpha = 1;
 			this.pointCloudSize = 5;
 			this.animate = false;
+			this.currentFrame = 1;
 			this.xPBC = 1;
 			this.yPBC = 1;
 			this.zPBC = 1;
 			this.PBCBoolean = false;
-			/*this.boxParticles = 200;
-			this.boxColorSetting = 10.0;
-			this.boxSize = 10;
-			this.boxOpacity = 1;
-			this.pointMatrixParticles = 100;
-			this.pointMatrixColorSettingMax = 1.2;
-			this.pointMatrixColorSettingMin = 0.0;
-			this.pointMatrixAlpha = 1;
-			this.pointMatrixSize = 10;*/
 			this.x_low =  xPlotMin;
 			this.x_high = xPlotMax;
 			this.y_low =  yPlotMin;
@@ -86,7 +105,6 @@ export function initialize3DViewSetup(viewSetup,views,plotSetup){
 			this.propertyOfInterest = plotSetup["pointcloudDensity"];
 			this.density = plotSetup["pointcloudDensity"];
 			this.colorMap = 'rainbow';
-			//this.dataFilename = "data/CO2_B3LYP_0_0_0_all_descriptors.csv";
 			this.planeVisibilityU = false;
 			this.planeVisibilityD = false;
 			this.planeVisibilityR = false;
@@ -96,6 +114,8 @@ export function initialize3DViewSetup(viewSetup,views,plotSetup){
 			this.planeOpacity = 0.05;
 			this.resetCamera = function(){viewSetup.controller.reset();};
 			this.systemEdgeBoolean = true;
+			this.autoRotateSystem = false;
+			this.autoRotateSpeed = 2.0;
 			this.toggleSystemEdge = function(){
 										if(viewSetup.options.systemEdgeBoolean){
 											addSystemEdge(viewSetup);
@@ -134,7 +154,43 @@ export function initialize3DViewSetup(viewSetup,views,plotSetup){
 										viewSetup.options.legendShownBoolean = !viewSetup.options.legendShownBoolean;
 									}
 								};
+			
+			this.moleculeColorCodeBasis = "atom";
+			this.moleculeColorMap = 'rainbow';
+			this.moleculeColorSettingMax = 2;
+			this.moleculeColorSettingMin = -2;
+			this.moleculeSizeCodeBasis = "atom";
+			this.moleculeSizeSettingMax = 2;
+			this.moleculeSizeSettingMin = -2;
+			this.moleculeAlpha = 1.0;
+			this.atomModelSegments = 6;
+			this.bondModelSegments = 3;
+			this.showAtoms = true;
+			this.showBonds = false;
+			this.atomsStyle = "sprite";
+			this.bondsStyle = "line";
 
+			this.legendXMolecule = 6;
+			this.legendYMolecule = -4;
+			this.legendWidthMolecule  = 0.5;
+			this.legendHeightMolecule = 6;
+			this.legendTickMolecule = 5;
+			this.legendFontsizeMolecule = 55;
+			this.legendShownBooleanMolecule = true;
+			this.toggleLegendMolecule = function(){
+									if (!viewSetup.options.legendShownBooleanMolecule){
+										insertLegendMolecule(viewSetup);
+										viewSetup.options.legendShownBooleanMolecule = !viewSetup.options.legendShownBooleanMolecule;
+									}
+									else {
+										removeLegendMolecule(viewSetup);
+										viewSetup.options.legendShownBooleanMolecule = !viewSetup.options.legendShownBooleanMolecule;
+									}
+								};
+
+
+			this.saveSystemMoleculeData = function(){saveSystemMoleculeData(viewSetup,plotSetup)};
+			this.saveSystemSpatiallyResolvedData = function(){saveSystemSpatiallyResolvedData(viewSetup,plotSetup)};
 		}
 	}
 

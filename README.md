@@ -1,5 +1,13 @@
-# Welcome to ElectroLens!
+# Visaulization tool for high dimensional electronic environment data
 
-The documentation is currently hosted on the wiki of the [development repository](https://github.com/ray38/ElectroLens/wiki).
+written in Threejs and wrapped to desktop  with electron.js 
 
-Please contact the developers if you have any questions or issues with installation.
+to install, please clone the repo, delete "node_modules" directory, and run "npm install" (please install nodejs/npm if you havent)
+
+To start, simply type "npm start"
+
+Please refer to the github wiki for information
+
+currently the most updated version is branch devel-0.2
+
+if you would like to test the package (with examples in the ElectroLens-example repo), please use the latest version 

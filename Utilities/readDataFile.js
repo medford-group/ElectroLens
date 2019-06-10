@@ -34,10 +34,14 @@ export function readCSV(view,plotData,callback){
 }
 
 
-export function readCSV2(view,plotData,plotSetup,callback){
-	console.log('started loading')
-	var filename = view.dataFilename;
-	var propertyList = plotSetup.propertyList;
+export function processSpatiallyResolvedData(view,overallSpatiallyResolvedData,plotSetup,callback){
+	view.systemSpatiallyResolvedData = [];
+	console.log('started processing data');
+	if (view.frameBool && !(plotSetup.spatiallyResolvedPropertyList.includes(plotSetup.frameProperty))){
+		alert("The frame property Not in spatiallyResolvedPropertyList");
+	}
+	var d = view.spatiallyResolvedData.data;
+	var propertyList = plotSetup.spatiallyResolvedPropertyList;
 	var density = plotSetup.pointcloudDensity;
 	var densityCutoff = plotSetup.densityCutoff;
 	var systemName = view.moleculeName;
@@ -45,45 +49,278 @@ export function readCSV2(view,plotData,plotSetup,callback){
 	var xPlotScale = view.xPlotScale;
 	var yPlotScale = view.yPlotScale;
 	var zPlotScale = view.zPlotScale;
-
-	console.log(density,densityCutoff,propertyList)
-	view.data = [];
-	d3.csv(filename, function (d) {
-		console.log('end loading')
-		d.forEach(function (d,i) {
-			var n = +d[density];
-			if (n >densityCutoff){
-				var temp = {
-						xPlot: xPlotScale(+d.x),
-						yPlot: yPlotScale(+d.y),
-						zPlot: zPlotScale(+d.z),
-						selected: true,
-						name: systemName
-					}
-				for (var i = 0; i < propertyList.length; i++) {
-				    temp[propertyList[i]] = +d[propertyList[i]];
+	d.forEach(function (d,i) {
+		var n = +d[density];
+		if (n >densityCutoff){
+			var temp = {
+					x:+d.x,
+					y:+d.y,
+					z:+d.z,
+					xPlot: xPlotScale(+d.x),
+					yPlot: yPlotScale(+d.y),
+					zPlot: zPlotScale(+d.z),
+					selected: true,
+					name: systemName
 				}
-
-
-				view.data.push(temp);
-				plotData.push(temp);
+			for (var i = 0; i < propertyList.length; i++) {
+			    temp[propertyList[i]] = +d[propertyList[i]];
 			}
-		})
-		console.log('end parsing')
+
+			if (view.frameBool){
+				var currentFrame = (+d[plotSetup.frameProperty]).toString();
+			}
+			else{
+				temp["__frame__"] = 1;
+				var currentFrame = (1).toString();
+			}
+
+			!(currentFrame in view.systemSpatiallyResolvedDataFramed) && (view.systemSpatiallyResolvedDataFramed[currentFrame] = []);
+
+			view.systemSpatiallyResolvedData.push(temp);
+			view.systemSpatiallyResolvedDataFramed[currentFrame].push(temp);
+			overallSpatiallyResolvedData.push(temp);
+
+		}
+	})
+	console.log('end processing data')
 	callback(null);
-	});
+}
+
+export function processMoleculeData(view,overallMoleculeData,plotSetup,callback){
+	view.systemMoleculeData = [];
+	view.systemMoleculeDataFramed = {};
+	console.log('started processing molecule data')
+	if (view.frameBool && !(plotSetup.moleculePropertyList.includes(plotSetup.frameProperty))){
+		alert("The frame property Not in moleculePropertyList");
+	}
+	var d = view.moleculeData.data;
+	var propertyList = plotSetup.moleculePropertyList;
+	var systemName = view.moleculeName;
+
+	var xPlotScale = view.xPlotScale;
+	var yPlotScale = view.yPlotScale;
+	var zPlotScale = view.zPlotScale;
+
+	
+	d.forEach(function (d,i) {
+
+		var temp = {
+					atom:d.atom,
+					x:+d.x,
+					y:+d.y,
+					z:+d.z,
+					xPlot: xPlotScale(+d.x),
+					yPlot: yPlotScale(+d.y),
+					zPlot: zPlotScale(+d.z),
+					selected: true,
+					name: systemName
+				};
+
+		for (var i = 0; i < propertyList.length; i++) {
+				if (propertyList[i] != "atom"){
+			    	temp[propertyList[i]] = +d[propertyList[i]];
+				}
+			}
+
+		if (view.frameBool){
+			var currentFrame = (+d[plotSetup.frameProperty]).toString();
+		}
+		else{
+			temp["__frame__"] = 1;
+			var currentFrame = (1).toString();
+		}
+
+		!(currentFrame in view.systemMoleculeDataFramed) && (view.systemMoleculeDataFramed[currentFrame] = []);
+
+		view.systemMoleculeData.push(temp);
+		view.systemMoleculeDataFramed[currentFrame].push(temp);
+		overallMoleculeData.push(temp);
+
+	})
+	console.log(view.systemMoleculeDataFramed);
+	console.log('end processing molecule data');
+	callback(null);
+}
+
+export function readCSVSpatiallyResolvedData(view,overallSpatiallyResolvedData,plotSetup,callback){
+	view.systemSpatiallyResolvedData = [];
+	view.systemSpatiallyResolvedDataFramed = {};
+
+	if (view.spatiallyResolvedData == null || view.spatiallyResolvedData.dataFilename == null){
+		console.log('no spatially resolved data loaded')
+		callback(null);
+	} else{
+		if (view.frameBool && !(plotSetup.spatiallyResolvedPropertyList.includes(plotSetup.frameProperty))){
+			alert("The frame property Not in spatiallyResolvedPropertyList");
+		}
+		console.log('started loading')
+		var filename = view.spatiallyResolvedData.dataFilename;
+		console.log(filename)
+		var propertyList = plotSetup.spatiallyResolvedPropertyList;
+		var density = plotSetup.pointcloudDensity;
+		var densityCutoff = plotSetup.densityCutoff;
+		var systemName = view.moleculeName;
+
+		var xPlotScale = view.xPlotScale;
+		var yPlotScale = view.yPlotScale;
+		var zPlotScale = view.zPlotScale;
+
+		console.log(density,densityCutoff,propertyList)
+		
+
+		d3.csv(filename, function (error,d) {
+			if (error && error.target.status === 404) {
+				console.log(error);
+				console.log("File not found");
+			}
+			if(d.length === 0){
+				console.log("File empty")
+			}
+			console.log('end loading')
+			d.forEach(function (d,i) {
+				var n = +d[density];
+				if (n >densityCutoff){
+					var temp = {
+							x:+d.x,
+							y:+d.y,
+							z:+d.z,
+							xPlot: xPlotScale(+d.x),
+							yPlot: yPlotScale(+d.y),
+							zPlot: zPlotScale(+d.z),
+							selected: true,
+							name: systemName
+						}
+					for (var i = 0; i < propertyList.length; i++) {
+					    temp[propertyList[i]] = +d[propertyList[i]];
+					}
+
+					if (view.frameBool){
+						var currentFrame = (+d[plotSetup.frameProperty]).toString();
+					}
+					else{
+						temp["__frame__"] = 1;
+						var currentFrame = (1).toString();
+					}
+
+					!(currentFrame in view.systemSpatiallyResolvedDataFramed) && (view.systemSpatiallyResolvedDataFramed[currentFrame] = []);
+
+					view.systemSpatiallyResolvedData.push(temp);
+					view.systemSpatiallyResolvedDataFramed[currentFrame].push(temp);
+					overallSpatiallyResolvedData.push(temp);
+
+				}
+			})
+			console.log('end parsing')
+			callback(null);
+		});
+
+	}
 
 }
 
-export function readCSVPapaparse(view,plotData,plotSetup,callback){
-	console.log('started using papa')
-	var filename = view.dataFilename;
-	var propertyList = plotSetup.propertyList;
-	var density = plotSetup.pointcloudDensity;
-	var densityCutoff = plotSetup.densityCutoff;
-	var systemName = view.moleculeName;
-	console.log(density,densityCutoff,propertyList)
-	view.data = [];
+
+export function readCSVMoleculeData(view,overallMoleculeData,plotSetup,callback){
+
+	view.systemMoleculeData = [];
+	view.systemMoleculeDataFramed = {};
+
+	if (view.moleculeData == null || view.moleculeData.dataFilename == null){
+		console.log('no molecule data loaded')
+		callback(null);
+	} else{
+		if (view.frameBool && !(plotSetup.moleculePropertyList.includes(plotSetup.frameProperty))){
+			alert("The frame property Not in moleculePropertyList");
+		}
+		console.log('started loading')
+		var filename = view.moleculeData.dataFilename;
+		console.log(filename)
+		var propertyList = plotSetup.moleculePropertyList;
+		var systemName = view.moleculeName;
+
+		var xPlotScale = view.xPlotScale;
+		var yPlotScale = view.yPlotScale;
+		var zPlotScale = view.zPlotScale;
+
+		
+
+		d3.csv(filename, function (error,d) {
+			if (error && error.target.status === 404) {
+				console.log(error);
+				console.log("File not found");
+			}
+			if(d.length === 0){
+				console.log("File empty")
+			}
+			console.log('end loading')
+			d.forEach(function (d,i) {
+
+				var temp = {
+							atom:d.atom,
+							x:+d.x,
+							y:+d.y,
+							z:+d.z,
+							xPlot: xPlotScale(+d.x),
+							yPlot: yPlotScale(+d.y),
+							zPlot: zPlotScale(+d.z),
+							selected: true,
+							name: systemName
+						};
+
+				for (var i = 0; i < propertyList.length; i++) {
+						if (propertyList[i] != "atom"){
+					    	temp[propertyList[i]] = +d[propertyList[i]];
+						}
+					}
+
+				if (view.frameBool){
+					var currentFrame = (+d[plotSetup.frameProperty]).toString();
+				}
+				else{
+					temp["__frame__"] = 1;
+					var currentFrame = (1).toString();
+				}
+
+				!(currentFrame in view.systemMoleculeDataFramed) && (view.systemMoleculeDataFramed[currentFrame] = []);
+
+				view.systemMoleculeData.push(temp);
+				view.systemMoleculeDataFramed[currentFrame].push(temp);
+				overallMoleculeData.push(temp);
+
+				/*var n = +d[density];
+				if (n >densityCutoff){
+					var temp = {
+							xPlot: xPlotScale(+d.x),
+							yPlot: yPlotScale(+d.y),
+							zPlot: zPlotScale(+d.z),
+							selected: true,
+							name: systemName
+						}
+					for (var i = 0; i < propertyList.length; i++) {
+					    temp[propertyList[i]] = +d[propertyList[i]];
+					}
+
+
+					view.data.push(temp);
+					plotData.push(temp);
+				}*/
+			})
+			console.log('end parsing')
+			callback(null);
+		});
+
+	}
+
+}
+
+//export function readCSVPapaparse(view,plotData,plotSetup,callback){
+//	console.log('started using papa')
+//	var filename = view.dataFilename;
+//	var propertyList = plotSetup.propertyList;
+//	var density = plotSetup.pointcloudDensity;
+//	var densityCutoff = plotSetup.densityCutoff;
+//	var systemName = view.moleculeName;
+//	console.log(density,densityCutoff,propertyList)
+//	view.data = [];
 	/*Papa.parse(filename, {
 		complete: function(results) {
 			console.log('successfully used papa')
@@ -91,26 +328,26 @@ export function readCSVPapaparse(view,plotData,plotSetup,callback){
 			callback(null);
 		}
 	});*/
-	$.ajax({
-    	url: filename,
-    	//dataType: 'json',
-    	type: 'get',
-    	cache: false,
-    	success: function(data) {
-    		console.log('loading setup');
-    		Papa.parse(data, {
-				complete: function(results) {
-					console.log('successfully used papa')
-					console.log(results);
-					callback(null);
-				}
-			});
-    	},
-    	error: function(requestObject, error, errorThrown) {
-            alert(error);
-            alert(errorThrown);
-        }
-    })
+//	$.ajax({
+//    	url: filename,
+//    	//dataType: 'json',
+//    	type: 'get',
+//    	cache: false,
+//    	success: function(data) {
+//    		console.log('loading setup');
+//    		Papa.parse(data, {
+//				complete: function(results) {
+//					console.log('successfully used papa')
+//					console.log(results);
+//					callback(null);
+//				}
+//			});
+//    	},
+//    	error: function(requestObject, error, errorThrown) {
+//            alert(error);
+//            alert(errorThrown);
+//        }
+//    })
 	/*d3.csv(filename, function (d) {
 		d.forEach(function (d,i) {
 			var n = +d[density];
@@ -132,7 +369,7 @@ export function readCSVPapaparse(view,plotData,plotSetup,callback){
 	callback(null);
 	});*/
 
-}
+//}
 
 function getCoordinateScales(data){
 	var xValue = function(d) {return d.x;}

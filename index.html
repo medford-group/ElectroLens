@@ -1,82 +1,535 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<title>three.js webgl - multiple views</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link href="css/main.css" rel="stylesheet" />
-	</head>
-	<body>
+<head>
+  <meta charset="utf-8">
+  <title>ElectroLens</title>
+  <style type="text/css">
+    * {
+        .border-radius(0) !important;
+      }
+    html, body {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .text-divider{margin: 1.2em 0; line-height: 0; text-align: center;}
+    .text-divider span{background-color: #ffffff; padding: 0.5em;}
+    .text-divider:before{ content: " "; display: block; border-top: 1px solid #e3e3e3; border-bottom: 1px solid #f7f7f7;}
+  </style>
+  <script src="vendor/jquery/jquery-3.4.1.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.js"></script>
+  <link href="vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet" />
+</head>
+<body>
 
-		<p id="uploader_wrapper">
-	        <input id="uploader" name="uploader" type="file" />
-	    </p>
-	    <div id="container"></div>
-		
-		<script src="node_modules/es6/ES6.js"></script>
-
-		<script src="js/three.js"></script>
-		<script src="js/jQuery.js"></script>
-		<script src="./node_modules/papaparse/papaparse.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
-		<script src="js/Detector.js"></script>
-		<script src="js/libs/stats.min.js"></script>
-		<script src="./MultiviewControl/customizeLut.js"></script>
-		<script src="js/controls/OrbitControls.js"></script>
-		<script src="js/controls/TrackballControls.js"></script>
-		<script src="js/libs/dat.gui.js"></script>
-		<script src="D3js/d3.min.js"></script>
-		<script src="https://d3js.org/d3-queue.v3.min.js"></script>
-		
-		<script src="3DViews/Utilities.js"></script>
+    <div class="outer" id="UI">
+      <div id="uploader_wrapper" class="inner card border-success">
+        <div class="card-header">Upload Configuration File</div>
+        <div class="card-body"><input id="uploader" name="uploader" type="file" /></div>
+      </div>
 
 
-		<script type="x-shader/x-vertex" id="vertexshader">
+      <h5 id="divider" class="text-divider"><span>OR</span></h5>
 
-			attribute float size;
-			attribute vec3 customColor;
-			attribute float alpha;
+      <div id="form_wrapper"class="inner2 card border-primary">
+        <div class="card-header">Setup Configuration</div>
+        <div class="card-body" style="overflow-y:scroll;">
+          <form id="configForm" >
 
-	    	varying float vAlpha;
-			varying vec3 vColor;
+            <div class="form-row">
+              <div class="col">
+                <input class="form-check-input" type="checkbox" value="yes" name="boolSpatiallyResolvedData" id="boolSpatiallyResolvedData">
+                <label for="boolSpatiallyResolvedData">Spatially Resolved Data? </label>
+              </div>
+              <div class="col">
+                <input class="form-check-input" type="checkbox" value="yes" name="boolMolecularData" id="boolMolecularData">
+                <label for="boolMolecularData">Molecular Data? </label>
+              </div>
+              <div class="col">
+                <input class="form-check-input" type="checkbox" value="yes" name="boolFramedData" id="boolFramedData">
+                <label for="boolFramedData">Framed Data? </label>
+              </div>
+              
+            </div>
 
-			void main() {
+            <div class="form-group" id="propertyListSpatiallyResolvedForm" style="display:none;">
+              <label for="propertyListSpatiallyResolved">List of Properties for Spatially Resolved Data</label>
+              <textarea class="form-control" id="propertyListSpatiallyResolved" name="propertyListSpatiallyResolved" rows="1" disabled>x, y, z, rho, property_1, property_2</textarea>
+              <small id="propertyListSpatiallyResolvedHelp" class="form-text text-muted">  *The list of properties for spatially resolved data, leave blank if not visualizing spatially resolved data</small>
+            </div>
 
-				vColor = customColor;
-				
-				vAlpha = alpha;
+            <div class="form-row">
+              <div class="col">
+                <div class="form-group" id="densityPropertyForm" style="display:none;">
+                  <label for="densityProperty">Density Property: </label>
+                  <input autocomplete="off" class="input" id="densityProperty" name="densityProperty" type="text" data-items="8" value="rho" disabled>
+                  <small id="densityPropertyHelp" class="form-text text-muted">  *The property denotes the density of electron.</small>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group" id="densityCutoffForm" style="display:none;">
+                  <label for="densityCutoff">Density Cutoff: </label>
+                  <input autocomplete="off" class="input" id="densityCutoff" name="densityCutoff" type="number" step=any data-items="8" value=1e-3 disabled>
+                </div>
+              </div>
+            </div>
 
-				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+            <div class="form-group" id="propertyListMolecularForm" style="display:none;">
+              <label for="propertyListMolecular">List of Properties for Molecular Data</label>
+              <textarea class="form-control" id="propertyListMolecular" name="propertyListMolecular" rows="1" disabled>x, y, z, atom, property_1, property_2</textarea>
+              <small id="propertyListMolecularHelp" class="form-text text-muted">  *The list of properties for molecular data, leave blank if not visualizing molecular data</small>
+            </div>
 
-				gl_PointSize = size * ( 300.0 / -mvPosition.z );
+            <div class="form-group" id="framePropertyForm" style="display:none;">
+              <label for="propertyListMolecular">Property Labeling frame</label>
+              <input autocomplete="off" class="input" id="frameProperty" name="frameProperty" type="text" data-items="8" value="frame" disabled>
+              <small id="framePropertyrHelp" class="form-text text-muted">  *The property labeling frame, leave blank if the data is not framed</small>
+            </div>
 
-				gl_Position = projectionMatrix * mvPosition;
+            
+            <div class="form-group" id="view1Form">
+              <h6 class="text-divider"><span>View 1</span></h6>
+              <div class="form-group" id="view1NameForm">
+                <label for="view1Name">System Name: </label>
+                <input autocomplete="off" class="input" id="view1Name" name="view1Name" type="text" value="System1" data-items="8"/>
+              </div>
 
-			}
+              <div class="form-group" id="view1DimensionForm">
+                <label>System Dimensions: </label>
+                <div class="form-row">
+                  <div class="col">
+                    <input class="form-check-input" type="checkbox" value="yes" name="boolView1CubicCell" id="boolView1CubicCell" checked>
+                    <label for="boolView1CubicCell">Cubic Cell? </label>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col">
+                    <label for="view1XMin">x min: </label>
+                    <input type="number" step=any class="input" id="view1XMin" name="view1XMin" value="-5.0">
+                  </div>
+                  <div class="col">
+                    <label for="view1YMin">y min: </label>
+                    <input type="number" step=any class="input" id="view1YMin" name="view1YMin" value="-5.0" disabled>
+                  </div>
+                  <div class="col">
+                    <label for="view1ZMin">z min: </label>
+                    <input type="number" step=any class="input" id="view1ZMin" name="view1ZMin" value="-5.0" disabled>
+                  </div>
+                  
+                </div>
+                <div class="form-row">
+                  <div class="col">
+                    <label for="view1XMax">x max: </label>
+                    <input type="number" step=any class="input" id="view1XMax" name="view1XMax" value="4.9">
+                  </div>
+                  <div class="col">
+                    <label for="view1YMax">y max: </label>
+                    <input type="number" step=any class="input" id="view1YMax" name="view1YMax" value="4.9" disabled>
+                  </div>
+                  <div class="col">
+                    <label for="view1ZMax">z max: </label>
+                    <input type="number" step=any class="input" id="view1ZMax" name="view1ZMax" value="4.9" disabled>
+                  </div>
+                </div>
+              </div>
 
-		</script>
+              <div class="form-group" id="view1SpatiallyResolvedForm" style="display:none;">
+                <div>
+                  <label for="view1SpatiallyResolvedDataFilename">Data File for Spatially Resolved Data: </label>
+                  <input id="view1SpatiallyResolvedDataFilename" name="view1SpatiallyResolvedDataFilename" type="file" />
+                </div>
 
-		<script type="x-shader/x-fragment" id="fragmentshader">
+                <label>Grid spacing: </label>
+                <div class="form-row">
+                  <div class="col">
+                    <label for="view1XSpacing">x: </label>
+                    <input type="number" step=any class="input" id="view1XSpacing" name="view1XSpacing" value="0.1">
+                  </div>
+                  <div class="col">
+                    <label for="view1YSpacing">y: </label>
+                    <input type="number" step=any class="input" id="view1YSpacing" name="view1YSpacing" value="0.1">
+                  </div>
+                  <div class="col">
+                    <label for="view1ZSpacing">z: </label>
+                    <input type="number" step=any class="input" id="view1ZSpacing" name="view1ZSpacing" value="0.1">
+                  </div>
+                </div>
+              </div>
 
-			uniform vec3 color;
-			uniform sampler2D texture;
+              <div class="form-group" id="view1MolecularForm" style="display:none;">
+                <div>
+                  <label for="view1MolecularDataFilename">Data File for Molecular Data: </label>
+                  <input id="view1MolecularDataFilename" name="view1MolecularDataFilename" type="file" />
+                </div>
+              </div>
 
-			varying vec3 vColor;
-			varying float vAlpha;
+            </div>
 
-			void main() {
+            <div id="addButton">
+              <button id="b1" class="btn add-more" type="button">+ Add view</button>
+            </div>
+            
 
-				gl_FragColor = vec4( color * vColor, vAlpha );
-
-				gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
-
-			}
-
-		</script>
-
-		<script src="2D3D_connection_heatmap_test.js"></script>
+            <button type="submit" class="btn btn-primary" id="formSubmitButton" disabled>Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
 
 
-	</body>
+
+    <script>
+      $(document).ready(function(){
+        var next = 1;
+        NUMBER3DVIEWS = 1;
+        $(".add-more").click(function(e){
+            e.preventDefault();
+            var addto = "#view" + next + "Form";
+            var addRemove = "#view" +( next) + "Form";
+            next = next + 1;
+            NUMBER3DVIEWS += 1;
+            
+            var newIn = ''
+            newIn += '<div class="form-group" id="view' + next + 'Form">\
+                      <h6 class="text-divider"><span>View ' + next + '</span></h6>\
+                      <div class="form-group" id="view' + next + 'NameForm">\
+                        <label for="view' + next + 'Name">System Name: </label>\
+                        <input autocomplete="off" class="input" id="view' + next + 'Name" name="view' + next + 'Name" type="text" value="System' + next + '" data-items="8"/>\
+                      </div>\
+                      <div class="form-group" id="view' + next + 'DimensionForm">\
+                        <label>System Dimensions: </label>\
+                        <div class="form-row">\
+                          <div class="col">\
+                            <input class="form-check-input" type="checkbox" value="yes" name="boolView' + next + 'CubicCell" id="boolView' + next + 'CubicCell" checked>\
+                            <label for="boolView' + next + 'CubicCell">Cubic Cell? </label>\
+                          </div>\
+                        </div>\
+                        <div class="form-row">\
+                          <div class="col">\
+                            <label for="view' + next + 'XMin">x min: </label>\
+                            <input type="number" step=any class="input" id="view' + next + 'XMin" name="view' + next + 'XMin" value="-5.0">\
+                          </div>\
+                          <div class="col">\
+                            <label for="view' + next + 'YMin">y min: </label>\
+                            <input type="number" step=any class="input" id="view' + next + 'YMin" name="view' + next + 'YMin" value="-5.0" disabled>\
+                          </div>\
+                          <div class="col">\
+                            <label for="view' + next + 'ZMin">z min: </label>\
+                            <input type="number" step=any class="input" id="view' + next + 'ZMin" name="view' + next + 'ZMin" value="-5.0" disabled>\
+                          </div>\
+                        </div>\
+                        <div class="form-row">\
+                          <div class="col">\
+                            <label for="view' + next + 'XMax">x max: </label>\
+                            <input type="number" step=any class="input" id="view' + next + 'XMax" name="view' + next + 'XMax" value="4.9">\
+                          </div>\
+                          <div class="col">\
+                            <label for="view' + next + 'YMax">y max: </label>\
+                            <input type="number" step=any class="input" id="view' + next + 'YMax" name="view' + next + 'YMax" value="4.9" disabled>\
+                          </div>\
+                          <div class="col">\
+                            <label for="view' + next + 'ZMax">z max: </label>\
+                            <input type="number" step=any class="input" id="view' + next + 'ZMax" name="view' + next + 'ZMax" value="4.9" disabled>\
+                          </div>\
+                        </div>\
+                      </div>\
+                      <div class="form-group" id="view' + next + 'SpatiallyResolvedForm" style="display:none;">\
+                        <div>\
+                          <label for="view' + next + 'SpatiallyResolvedDataFilename">Data File for Spatially Resolved Data: </label>\
+                          <input id="view' + next + 'SpatiallyResolvedDataFilename" name="view' + next + 'SpatiallyResolvedDataFilename" type="file" />\
+                        </div>\
+                        <label>Grid spacing: </label>\
+                        <div class="form-row">\
+                          <div class="col">\
+                            <label for="view' + next + 'XSpacing">x: </label>\
+                            <input type="number" step=any class="input" id="view' + next + 'XSpacing" name="view' + next + 'XSpacing" value="0.1">\
+                          </div>\
+                          <div class="col">\
+                            <label for="view' + next + 'YSpacing">y: </label>\
+                            <input type="number" step=any class="input" id="view' + next + 'YSpacing" name="view' + next + 'YSpacing" value="0.1">\
+                          </div>\
+                          <div class="col">\
+                            <label for="view' + next + 'ZSpacing">z: </label>\
+                            <input type="number" step=any class="input" id="view' + next + 'ZSpacing" name="view' + next + 'ZSpacing" value="0.1">\
+                          </div>\
+                        </div>\
+                      </div>\
+                      <div class="form-group" id="view' + next + 'MolecularForm" style="display:none;">\
+                        <div>\
+                          <label for="view' + next + 'MolecularDataFilename">Data File for Molecular Data: </label>\
+                          <input id="view' + next + 'MolecularDataFilename" name="view' + next + 'MolecularDataFilename" type="file" />\
+                        </div>\
+                      </div>\
+                    </div>'
+
+            var newInput = $(newIn);
+            var removeBtn = '<button id="remove' + (next - 1) + '" class="btn btn-danger remove-me" >Remove View</button></div><div id="field">';
+            var removeButton = $(removeBtn);
+            $(addto).after(newInput);
+            //$(addRemove).after(removeButton);
+            //$("#field" + next).attr('data-source',$(addto).attr('data-source'));
+            $("#count").val(next);  
+
+            document.getElementById('boolView' + next + 'CubicCell').onchange = function() {
+              document.getElementById('view' + next + 'YMax').disabled = this.checked;
+              document.getElementById('view' + next + 'ZMax').disabled = this.checked;
+              document.getElementById('view' + next + 'YMin').disabled = this.checked;
+              document.getElementById('view' + next + 'ZMin').disabled = this.checked;
+            };
+
+            document.getElementById('view' + next + 'XMin').onchange = function(){
+              if (document.getElementById('boolView' + next + 'CubicCell').checked){
+                document.getElementById('view' + next + 'YMin').value = document.getElementById('view' + next + 'XMin').value;
+                document.getElementById('view' + next + 'ZMin').value = document.getElementById('view' + next + 'XMin').value;
+              }
+            }
+            document.getElementById('view' + next + 'XMax').onchange = function(){
+              if (document.getElementById('boolView' + next + 'CubicCell').checked){
+                document.getElementById('view' + next + 'YMax').value = document.getElementById('view' + next + 'XMax').value;
+                document.getElementById('view' + next + 'ZMax').value = document.getElementById('view' + next + 'XMax').value;
+              }
+            }
+
+            
+
+            for (var i = 0; i < NUMBER3DVIEWS; i++) { 
+              var tempSpatiallyResolvedFormID = "view" + (i+1) + "SpatiallyResolvedForm";
+              if (document.getElementById('boolSpatiallyResolvedData').checked){
+                document.getElementById(tempSpatiallyResolvedFormID).style.display = "block";
+              }
+              else{
+                document.getElementById(tempSpatiallyResolvedFormID).style.display = "none";
+              }
+            } 
+
+            for (var i = 0; i < NUMBER3DVIEWS; i++) { 
+              var tempMolecularFormID = "view" + (i+1) + "MolecularForm";
+              if (document.getElementById('boolMolecularData').checked){
+                document.getElementById(tempMolecularFormID).style.display = "block";
+              }
+              else{
+                document.getElementById(tempMolecularFormID).style.display = "none";
+              }
+            } 
+            
+            /*
+                $('.remove-me').click(function(e){
+                    e.preventDefault();
+                    var fieldNum = this.id.charAt(this.id.length-1);
+                    var fieldID = "#view" + fieldNum + "Form";
+                    console.log(fieldID)
+                    $(this).remove();
+                    $(fieldID).remove();
+                });
+                */
+        });   
+    });
+    </script>
+
+    <script>
+      document.getElementById('boolSpatiallyResolvedData').onchange = function() {
+        document.getElementById('propertyListSpatiallyResolved').disabled = !this.checked;
+        document.getElementById('densityProperty').disabled = !this.checked;
+        document.getElementById('densityCutoff').disabled = !this.checked;
+        if (this.checked){
+          document.getElementById('propertyListSpatiallyResolvedForm').style.display = "block";
+          document.getElementById('densityPropertyForm').style.display = "block";
+          document.getElementById('densityCutoffForm').style.display = "block";
+        }
+        else{
+          document.getElementById('propertyListSpatiallyResolvedForm').style.display = "none";
+          document.getElementById('densityPropertyForm').style.display = "none";
+          document.getElementById('densityCutoffForm').style.display = "none";
+        }
+
+        for (var i = 0; i < NUMBER3DVIEWS; i++) { 
+          var tempSpatiallyResolvedFormID = "view" + (i+1) + "SpatiallyResolvedForm";
+          if (this.checked){
+            document.getElementById(tempSpatiallyResolvedFormID).style.display = "block";
+          }
+          else{
+            document.getElementById(tempSpatiallyResolvedFormID).style.display = "none";
+          }
+        } 
+
+        if (document.getElementById('boolSpatiallyResolvedData').checked  || document.getElementById('boolMolecularData').checked ){
+          document.getElementById('formSubmitButton').disabled = false;
+        }
+        else{
+          document.getElementById('formSubmitButton').disabled = true;
+        }
+        
+      };
+
+      document.getElementById('boolMolecularData').onchange = function() {
+        document.getElementById('propertyListMolecular').disabled = !this.checked;
+        if (this.checked){
+          document.getElementById('propertyListMolecularForm').style.display = "block";
+        }
+        else{
+          document.getElementById('propertyListMolecularForm').style.display = "none";
+        }
+
+        for (var i = 0; i < NUMBER3DVIEWS; i++) { 
+          var tempMolecularFormID = "view" + (i+1) + "MolecularForm";
+          if (this.checked){
+            document.getElementById(tempMolecularFormID).style.display = "block";
+          }
+          else{
+            document.getElementById(tempMolecularFormID).style.display = "none";
+          }
+        } 
+
+        if (document.getElementById('boolSpatiallyResolvedData').checked  || document.getElementById('boolMolecularData').checked ){
+          document.getElementById('formSubmitButton').disabled = false;
+        }
+        else{
+          document.getElementById('formSubmitButton').disabled = true;
+        }
+        
+      };
+
+      document.getElementById('boolFramedData').onchange = function() {
+        document.getElementById('frameProperty').disabled = !this.checked;
+        if (this.checked){
+          document.getElementById('framePropertyForm').style.display = "block";
+        }
+        else{
+          document.getElementById('framePropertyForm').style.display = "none";
+        }
+      };
+
+      document.getElementById('boolView1CubicCell').onchange = function() {
+        document.getElementById('view1YMax').disabled = this.checked;
+        document.getElementById('view1ZMax').disabled = this.checked;
+        document.getElementById('view1YMin').disabled = this.checked;
+        document.getElementById('view1ZMin').disabled = this.checked;
+      };
+
+      document.getElementById('view1XMin').onchange = function(){
+        if (document.getElementById('boolView1CubicCell').checked){
+          document.getElementById('view1YMin').value = document.getElementById('view1XMin').value;
+          document.getElementById('view1ZMin').value = document.getElementById('view1XMin').value;
+        }
+      }
+      document.getElementById('view1XMax').onchange = function(){
+        if (document.getElementById('boolView1CubicCell').checked){
+          document.getElementById('view1YMax').value = document.getElementById('view1XMax').value;
+          document.getElementById('view1ZMax').value = document.getElementById('view1XMax').value;
+        }
+      }
+/*
+
+      $("#textBoxA").keyup(function(){
+   $("#textBoxB").val($("#textBoxA").val());
+});
+
+$("#textBoxB").keyup(function(){
+   $("#textBoxA").val($("#textBoxB").val());
+});*/
+    </script>
+
+    <div id="container"></div>
+
+
+    <section id='spinner'></section>
+    
+    <script src="node_modules/es6/ES6.js"></script>
+    
+    <script src="js/kdtree.js"></script>
+    <script src="js/progressbar.js"></script>
+    <script src="js/three.js"></script>
+    <script src="js/effects/AnaglyphEffect.js"></script>
+    <link rel="stylesheet" type="text/css" href="js/loading-bar.css"/>
+    <script src="js/loading-bar.js"></script>
+
+    <script src='js/LineSegmentsGeometry.js'></script>
+    <script src='js/LineGeometry.js'></script>
+    <script src='js/WireframeGeometry2.js'></script>
+    <script src='js/LineMaterial.js'></script>
+    <script src='js/LineSegments2.js'></script>
+    <script src='js/Line2.js'></script>
+    <script src='js/Wireframe.js'></script>
+
+    <script src="js/jQuery.js"></script>
+    <script src="./node_modules/papaparse/papaparse.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <script src="js/Detector.js"></script>
+    <script src="js/libs/stats.min.js"></script>
+    <script src="./MultiviewControl/customizeLut.js"></script>
+    <script src="js/controls/OrbitControls.js"></script>
+    <script src="js/controls/TrackballControls.js"></script>
+    <script src="js/libs/dat.gui.js"></script>
+    <script src="D3js/d3.min.js"></script>
+    <script src="D3js/d3-queue.v3.min.js"></script>
+    
+    <script src="3DViews/Utilities.js"></script>
+
+
+    <script type="x-shader/x-vertex" id="vertexshader">
+      attribute float size;
+      attribute vec3 customColor;
+      attribute float alpha;
+
+        varying float vAlpha;
+      varying vec3 vColor;
+
+      void main() {
+        vColor = customColor;
+        vAlpha = alpha;
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        gl_PointSize = size * ( 300.0 / -mvPosition.z );
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    </script>
+
+    <script type="x-shader/x-fragment" id="fragmentshader">
+      uniform vec3 color;
+      uniform sampler2D texture;
+
+      varying vec3 vColor;
+      varying float vAlpha;
+
+      void main() {
+        gl_FragColor = vec4( color * vColor, vAlpha );
+        gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+      }
+    </script>
+    <script type="x-shader/x-vertex" id="vertexshader_molecule">
+      attribute float size;
+      attribute vec3 customColor;
+
+      varying vec3 vColor;
+
+      void main() {
+        vColor = customColor;
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+        gl_PointSize = size * ( 300.0 / -mvPosition.z );
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    </script>
+
+    <script type="x-shader/x-fragment" id="fragmentshader_molecule">
+      uniform vec3 color;
+      uniform sampler2D texture;
+
+      varying vec3 vColor;
+
+      void main() {
+        gl_FragColor = vec4( color * vColor, 1.0 );
+        gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+        if ( gl_FragColor.a < ALPHATEST ) discard;
+      }
+    </script>
+
+
+
+    <script src="2D3D_connection_heatmap_test.js"></script>
+    <script>
+      electroLensMain();
+    </script>
+ 
+</body>
 </html>
