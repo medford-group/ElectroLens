@@ -1,51 +1,45 @@
 {
-  "name": "ElectroLens",
-  "version": "0.1.0",
-  "description": "Tool to visualize at electron density data",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "build": "babel --presets es2015 es6 -d es5",
-    "pack": "build --dir",
-    "dist": "build -w",
-    "package-win": "electron-packager . ElectroLens --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/logo.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName='ElectroLens'",
-    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/logo.icns --prune=true --out=release-builds",
-    "package-linux": "electron-packager . ElectroLens --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/64x64.png --prune=true --out=release-builds"
-  },
-  "build": {
-    "appId": "ray38.medfordgroup.ElectroLens",
-    "productName": "ElectroLens",
-    "icon": "screenshots/icon.ico",
-    "win": {
-      "icon": "screenshots/icon.ico",
-      "publisherName": "Xiangyun Lei"
+    "title": "Agency",
+    "name": "startbootstrap-agency",
+    "version": "5.0.5",
+    "description": "Agency is a one page HTML theme for Bootstrap.",
+    "keywords": [
+        "css",
+        "sass",
+        "html",
+        "responsive",
+        "theme",
+        "template"
+    ],
+    "homepage": "https://startbootstrap.com/template-overviews/agency",
+    "bugs": {
+        "url": "https://github.com/BlackrockDigital/startbootstrap-agency/issues",
+        "email": "feedback@startbootstrap.com"
+    },
+    "license": "MIT",
+    "author": "Start Bootstrap",
+    "contributors": [
+        "David Miller (http://davidmiller.io/)"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BlackrockDigital/startbootstrap-agency.git"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "5.7.0",
+        "bootstrap": "4.2.1",
+        "jquery": "3.3.1",
+        "jquery.easing": "^1.4.1"
+    },
+    "devDependencies": {
+        "browser-sync": "2.26.3",
+        "gulp": "4.0.0",
+        "gulp-autoprefixer": "6.0.0",
+        "gulp-clean-css": "4.0.0",
+        "gulp-header": "2.0.7",
+        "gulp-plumber": "^1.2.1",
+        "gulp-rename": "1.4.0",
+        "gulp-sass": "4.0.2",
+        "gulp-uglify": "3.0.1"
     }
-  },
-  "repository": "https://github.com/ray38/electron_visualization",
-  "keywords": [
-    "ElectroLens"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^6.1.0",
-    "electron": "4.0.8",
-    "electron-builder": "^20.5.1",
-    "electron-packager": "^11.1.0",
-    "extract-zip": "=1.6.0",
-    "factor-bundle": "^2.5.0",
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^3.8.0",
-    "grunt-contrib-watch": "^0.6.1"
-  },
-  "dependencies": {
-    "babel-plugin-transform-es2015-modules-systemjs": "^6.24.1",
-    "electron": "^5.0.1",
-    "es6": "0.0.7",
-    "grunt-cli": "^1.2.0",
-    "papaparse": "^4.3.6"
-  }
 }

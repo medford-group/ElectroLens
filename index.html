@@ -1,535 +1,737 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
   <title>ElectroLens</title>
-  <style type="text/css">
-    * {
-        .border-radius(0) !important;
-      }
-    html, body {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-    .text-divider{margin: 1.2em 0; line-height: 0; text-align: center;}
-    .text-divider span{background-color: #ffffff; padding: 0.5em;}
-    .text-divider:before{ content: " "; display: block; border-top: 1px solid #e3e3e3; border-bottom: 1px solid #f7f7f7;}
-  </style>
-  <script src="vendor/jquery/jquery-3.4.1.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.js"></script>
-  <link href="vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
-  <link href="css/main.css" rel="stylesheet" />
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+  <!-- Custom fonts for this template -->
+  <link href="vendor/fontawesome-free/css/all.css" rel="stylesheet" type="text/css">
+  <link href="vendor/fontawesome-free/css/brand.css" rel="stylesheet" type="text/css">
+  <link href="vendor/fontawesome-free/css/v4-shims.css" rel="stylesheet" type="text/css">
+  <link href="vendor/fontawesome-free/css/fontawesome.css" rel="stylesheet" type="text/css">
+
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+
+  <!-- Custom styles for this template -->
+  <link href="css/agency.css" rel="stylesheet">
+
 </head>
-<body>
 
-    <div class="outer" id="UI">
-      <div id="uploader_wrapper" class="inner card border-success">
-        <div class="card-header">Upload Configuration File</div>
-        <div class="card-body"><input id="uploader" name="uploader" type="file" /></div>
+<body id="page-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">ElectroLens</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav text-uppercase ml-auto">
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#introduction">Introduction</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#download">Download</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#quickstart">Quickstart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#publications">Publications</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#team">Team</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#software">Software</a>
+          </li>
+        </ul>
       </div>
+    </div>
+  </nav>
 
+  <!-- Header -->
+  <header class="masthead">
+    <div class="container">
+      <div class="intro-text">
 
-      <h5 id="divider" class="text-divider"><span>OR</span></h5>
+      </div>
+    </div>
+  </header>
 
-      <div id="form_wrapper"class="inner2 card border-primary">
-        <div class="card-header">Setup Configuration</div>
-        <div class="card-body" style="overflow-y:scroll;">
-          <form id="configForm" >
-
-            <div class="form-row">
-              <div class="col">
-                <input class="form-check-input" type="checkbox" value="yes" name="boolSpatiallyResolvedData" id="boolSpatiallyResolvedData">
-                <label for="boolSpatiallyResolvedData">Spatially Resolved Data? </label>
-              </div>
-              <div class="col">
-                <input class="form-check-input" type="checkbox" value="yes" name="boolMolecularData" id="boolMolecularData">
-                <label for="boolMolecularData">Molecular Data? </label>
-              </div>
-              <div class="col">
-                <input class="form-check-input" type="checkbox" value="yes" name="boolFramedData" id="boolFramedData">
-                <label for="boolFramedData">Framed Data? </label>
-              </div>
-              
-            </div>
-
-            <div class="form-group" id="propertyListSpatiallyResolvedForm" style="display:none;">
-              <label for="propertyListSpatiallyResolved">List of Properties for Spatially Resolved Data</label>
-              <textarea class="form-control" id="propertyListSpatiallyResolved" name="propertyListSpatiallyResolved" rows="1" disabled>x, y, z, rho, property_1, property_2</textarea>
-              <small id="propertyListSpatiallyResolvedHelp" class="form-text text-muted">  *The list of properties for spatially resolved data, leave blank if not visualizing spatially resolved data</small>
-            </div>
-
-            <div class="form-row">
-              <div class="col">
-                <div class="form-group" id="densityPropertyForm" style="display:none;">
-                  <label for="densityProperty">Density Property: </label>
-                  <input autocomplete="off" class="input" id="densityProperty" name="densityProperty" type="text" data-items="8" value="rho" disabled>
-                  <small id="densityPropertyHelp" class="form-text text-muted">  *The property denotes the density of electron.</small>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-group" id="densityCutoffForm" style="display:none;">
-                  <label for="densityCutoff">Density Cutoff: </label>
-                  <input autocomplete="off" class="input" id="densityCutoff" name="densityCutoff" type="number" step=any data-items="8" value=1e-3 disabled>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group" id="propertyListMolecularForm" style="display:none;">
-              <label for="propertyListMolecular">List of Properties for Molecular Data</label>
-              <textarea class="form-control" id="propertyListMolecular" name="propertyListMolecular" rows="1" disabled>x, y, z, atom, property_1, property_2</textarea>
-              <small id="propertyListMolecularHelp" class="form-text text-muted">  *The list of properties for molecular data, leave blank if not visualizing molecular data</small>
-            </div>
-
-            <div class="form-group" id="framePropertyForm" style="display:none;">
-              <label for="propertyListMolecular">Property Labeling frame</label>
-              <input autocomplete="off" class="input" id="frameProperty" name="frameProperty" type="text" data-items="8" value="frame" disabled>
-              <small id="framePropertyrHelp" class="form-text text-muted">  *The property labeling frame, leave blank if the data is not framed</small>
-            </div>
-
-            
-            <div class="form-group" id="view1Form">
-              <h6 class="text-divider"><span>View 1</span></h6>
-              <div class="form-group" id="view1NameForm">
-                <label for="view1Name">System Name: </label>
-                <input autocomplete="off" class="input" id="view1Name" name="view1Name" type="text" value="System1" data-items="8"/>
-              </div>
-
-              <div class="form-group" id="view1DimensionForm">
-                <label>System Dimensions: </label>
-                <div class="form-row">
-                  <div class="col">
-                    <input class="form-check-input" type="checkbox" value="yes" name="boolView1CubicCell" id="boolView1CubicCell" checked>
-                    <label for="boolView1CubicCell">Cubic Cell? </label>
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="col">
-                    <label for="view1XMin">x min: </label>
-                    <input type="number" step=any class="input" id="view1XMin" name="view1XMin" value="-5.0">
-                  </div>
-                  <div class="col">
-                    <label for="view1YMin">y min: </label>
-                    <input type="number" step=any class="input" id="view1YMin" name="view1YMin" value="-5.0" disabled>
-                  </div>
-                  <div class="col">
-                    <label for="view1ZMin">z min: </label>
-                    <input type="number" step=any class="input" id="view1ZMin" name="view1ZMin" value="-5.0" disabled>
-                  </div>
-                  
-                </div>
-                <div class="form-row">
-                  <div class="col">
-                    <label for="view1XMax">x max: </label>
-                    <input type="number" step=any class="input" id="view1XMax" name="view1XMax" value="4.9">
-                  </div>
-                  <div class="col">
-                    <label for="view1YMax">y max: </label>
-                    <input type="number" step=any class="input" id="view1YMax" name="view1YMax" value="4.9" disabled>
-                  </div>
-                  <div class="col">
-                    <label for="view1ZMax">z max: </label>
-                    <input type="number" step=any class="input" id="view1ZMax" name="view1ZMax" value="4.9" disabled>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group" id="view1SpatiallyResolvedForm" style="display:none;">
-                <div>
-                  <label for="view1SpatiallyResolvedDataFilename">Data File for Spatially Resolved Data: </label>
-                  <input id="view1SpatiallyResolvedDataFilename" name="view1SpatiallyResolvedDataFilename" type="file" />
-                </div>
-
-                <label>Grid spacing: </label>
-                <div class="form-row">
-                  <div class="col">
-                    <label for="view1XSpacing">x: </label>
-                    <input type="number" step=any class="input" id="view1XSpacing" name="view1XSpacing" value="0.1">
-                  </div>
-                  <div class="col">
-                    <label for="view1YSpacing">y: </label>
-                    <input type="number" step=any class="input" id="view1YSpacing" name="view1YSpacing" value="0.1">
-                  </div>
-                  <div class="col">
-                    <label for="view1ZSpacing">z: </label>
-                    <input type="number" step=any class="input" id="view1ZSpacing" name="view1ZSpacing" value="0.1">
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group" id="view1MolecularForm" style="display:none;">
-                <div>
-                  <label for="view1MolecularDataFilename">Data File for Molecular Data: </label>
-                  <input id="view1MolecularDataFilename" name="view1MolecularDataFilename" type="file" />
-                </div>
-              </div>
-
-            </div>
-
-            <div id="addButton">
-              <button id="b1" class="btn add-more" type="button">+ Add view</button>
-            </div>
-            
-
-            <button type="submit" class="btn btn-primary" id="formSubmitButton" disabled>Submit</button>
-          </form>
+  <!-- Services -->
+  <section class="bg-light" id="introduction">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <h2 class="section-heading text-uppercase">ElectroLens</h2>
+          <h3 class="section-subheading text-muted">
+          A new visualization tool for high-dimensional spatially-resolved features to tackle this problem. The tool visualizes atomistic structures and electron density data sets by a series of 3D views and 2D plots. The tool is able to connect different derived features and their corresponding regions in 3D via interactive selection. It is built to be visually attractive, efficient with large datasets, and easy to use and integrate with existing infrastructure.
+        </h3>
         </div>
       </div>
     </div>
+  </section>
 
 
-
-    <script>
-      $(document).ready(function(){
-        var next = 1;
-        NUMBER3DVIEWS = 1;
-        $(".add-more").click(function(e){
-            e.preventDefault();
-            var addto = "#view" + next + "Form";
-            var addRemove = "#view" +( next) + "Form";
-            next = next + 1;
-            NUMBER3DVIEWS += 1;
-            
-            var newIn = ''
-            newIn += '<div class="form-group" id="view' + next + 'Form">\
-                      <h6 class="text-divider"><span>View ' + next + '</span></h6>\
-                      <div class="form-group" id="view' + next + 'NameForm">\
-                        <label for="view' + next + 'Name">System Name: </label>\
-                        <input autocomplete="off" class="input" id="view' + next + 'Name" name="view' + next + 'Name" type="text" value="System' + next + '" data-items="8"/>\
-                      </div>\
-                      <div class="form-group" id="view' + next + 'DimensionForm">\
-                        <label>System Dimensions: </label>\
-                        <div class="form-row">\
-                          <div class="col">\
-                            <input class="form-check-input" type="checkbox" value="yes" name="boolView' + next + 'CubicCell" id="boolView' + next + 'CubicCell" checked>\
-                            <label for="boolView' + next + 'CubicCell">Cubic Cell? </label>\
-                          </div>\
-                        </div>\
-                        <div class="form-row">\
-                          <div class="col">\
-                            <label for="view' + next + 'XMin">x min: </label>\
-                            <input type="number" step=any class="input" id="view' + next + 'XMin" name="view' + next + 'XMin" value="-5.0">\
-                          </div>\
-                          <div class="col">\
-                            <label for="view' + next + 'YMin">y min: </label>\
-                            <input type="number" step=any class="input" id="view' + next + 'YMin" name="view' + next + 'YMin" value="-5.0" disabled>\
-                          </div>\
-                          <div class="col">\
-                            <label for="view' + next + 'ZMin">z min: </label>\
-                            <input type="number" step=any class="input" id="view' + next + 'ZMin" name="view' + next + 'ZMin" value="-5.0" disabled>\
-                          </div>\
-                        </div>\
-                        <div class="form-row">\
-                          <div class="col">\
-                            <label for="view' + next + 'XMax">x max: </label>\
-                            <input type="number" step=any class="input" id="view' + next + 'XMax" name="view' + next + 'XMax" value="4.9">\
-                          </div>\
-                          <div class="col">\
-                            <label for="view' + next + 'YMax">y max: </label>\
-                            <input type="number" step=any class="input" id="view' + next + 'YMax" name="view' + next + 'YMax" value="4.9" disabled>\
-                          </div>\
-                          <div class="col">\
-                            <label for="view' + next + 'ZMax">z max: </label>\
-                            <input type="number" step=any class="input" id="view' + next + 'ZMax" name="view' + next + 'ZMax" value="4.9" disabled>\
-                          </div>\
-                        </div>\
-                      </div>\
-                      <div class="form-group" id="view' + next + 'SpatiallyResolvedForm" style="display:none;">\
-                        <div>\
-                          <label for="view' + next + 'SpatiallyResolvedDataFilename">Data File for Spatially Resolved Data: </label>\
-                          <input id="view' + next + 'SpatiallyResolvedDataFilename" name="view' + next + 'SpatiallyResolvedDataFilename" type="file" />\
-                        </div>\
-                        <label>Grid spacing: </label>\
-                        <div class="form-row">\
-                          <div class="col">\
-                            <label for="view' + next + 'XSpacing">x: </label>\
-                            <input type="number" step=any class="input" id="view' + next + 'XSpacing" name="view' + next + 'XSpacing" value="0.1">\
-                          </div>\
-                          <div class="col">\
-                            <label for="view' + next + 'YSpacing">y: </label>\
-                            <input type="number" step=any class="input" id="view' + next + 'YSpacing" name="view' + next + 'YSpacing" value="0.1">\
-                          </div>\
-                          <div class="col">\
-                            <label for="view' + next + 'ZSpacing">z: </label>\
-                            <input type="number" step=any class="input" id="view' + next + 'ZSpacing" name="view' + next + 'ZSpacing" value="0.1">\
-                          </div>\
-                        </div>\
-                      </div>\
-                      <div class="form-group" id="view' + next + 'MolecularForm" style="display:none;">\
-                        <div>\
-                          <label for="view' + next + 'MolecularDataFilename">Data File for Molecular Data: </label>\
-                          <input id="view' + next + 'MolecularDataFilename" name="view' + next + 'MolecularDataFilename" type="file" />\
-                        </div>\
-                      </div>\
-                    </div>'
-
-            var newInput = $(newIn);
-            var removeBtn = '<button id="remove' + (next - 1) + '" class="btn btn-danger remove-me" >Remove View</button></div><div id="field">';
-            var removeButton = $(removeBtn);
-            $(addto).after(newInput);
-            //$(addRemove).after(removeButton);
-            //$("#field" + next).attr('data-source',$(addto).attr('data-source'));
-            $("#count").val(next);  
-
-            document.getElementById('boolView' + next + 'CubicCell').onchange = function() {
-              document.getElementById('view' + next + 'YMax').disabled = this.checked;
-              document.getElementById('view' + next + 'ZMax').disabled = this.checked;
-              document.getElementById('view' + next + 'YMin').disabled = this.checked;
-              document.getElementById('view' + next + 'ZMin').disabled = this.checked;
-            };
-
-            document.getElementById('view' + next + 'XMin').onchange = function(){
-              if (document.getElementById('boolView' + next + 'CubicCell').checked){
-                document.getElementById('view' + next + 'YMin').value = document.getElementById('view' + next + 'XMin').value;
-                document.getElementById('view' + next + 'ZMin').value = document.getElementById('view' + next + 'XMin').value;
-              }
-            }
-            document.getElementById('view' + next + 'XMax').onchange = function(){
-              if (document.getElementById('boolView' + next + 'CubicCell').checked){
-                document.getElementById('view' + next + 'YMax').value = document.getElementById('view' + next + 'XMax').value;
-                document.getElementById('view' + next + 'ZMax').value = document.getElementById('view' + next + 'XMax').value;
-              }
-            }
-
-            
-
-            for (var i = 0; i < NUMBER3DVIEWS; i++) { 
-              var tempSpatiallyResolvedFormID = "view" + (i+1) + "SpatiallyResolvedForm";
-              if (document.getElementById('boolSpatiallyResolvedData').checked){
-                document.getElementById(tempSpatiallyResolvedFormID).style.display = "block";
-              }
-              else{
-                document.getElementById(tempSpatiallyResolvedFormID).style.display = "none";
-              }
-            } 
-
-            for (var i = 0; i < NUMBER3DVIEWS; i++) { 
-              var tempMolecularFormID = "view" + (i+1) + "MolecularForm";
-              if (document.getElementById('boolMolecularData').checked){
-                document.getElementById(tempMolecularFormID).style.display = "block";
-              }
-              else{
-                document.getElementById(tempMolecularFormID).style.display = "none";
-              }
-            } 
-            
-            /*
-                $('.remove-me').click(function(e){
-                    e.preventDefault();
-                    var fieldNum = this.id.charAt(this.id.length-1);
-                    var fieldID = "#view" + fieldNum + "Form";
-                    console.log(fieldID)
-                    $(this).remove();
-                    $(fieldID).remove();
-                });
-                */
-        });   
-    });
-    </script>
-
-    <script>
-      document.getElementById('boolSpatiallyResolvedData').onchange = function() {
-        document.getElementById('propertyListSpatiallyResolved').disabled = !this.checked;
-        document.getElementById('densityProperty').disabled = !this.checked;
-        document.getElementById('densityCutoff').disabled = !this.checked;
-        if (this.checked){
-          document.getElementById('propertyListSpatiallyResolvedForm').style.display = "block";
-          document.getElementById('densityPropertyForm').style.display = "block";
-          document.getElementById('densityCutoffForm').style.display = "block";
-        }
-        else{
-          document.getElementById('propertyListSpatiallyResolvedForm').style.display = "none";
-          document.getElementById('densityPropertyForm').style.display = "none";
-          document.getElementById('densityCutoffForm').style.display = "none";
-        }
-
-        for (var i = 0; i < NUMBER3DVIEWS; i++) { 
-          var tempSpatiallyResolvedFormID = "view" + (i+1) + "SpatiallyResolvedForm";
-          if (this.checked){
-            document.getElementById(tempSpatiallyResolvedFormID).style.display = "block";
-          }
-          else{
-            document.getElementById(tempSpatiallyResolvedFormID).style.display = "none";
-          }
-        } 
-
-        if (document.getElementById('boolSpatiallyResolvedData').checked  || document.getElementById('boolMolecularData').checked ){
-          document.getElementById('formSubmitButton').disabled = false;
-        }
-        else{
-          document.getElementById('formSubmitButton').disabled = true;
-        }
+  <section id="download">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <h2 class="section-heading text-uppercase">Download</h2>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col-md-4">
+          <span class="fa-stack fa-4x">
+            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+            <i class="fas fa-download fa-stack-1x fa-inverse"></i>
+          </span>
+          <h4 class="service-heading">
+            <a href="https://www.google.com">Download </a>
+          </h4>
+          <p class="text-muted">Latest Stable version (Coming Soon!)</p>
+        </div>
+        <div class="col-md-4">
+          <span class="fa-stack fa-4x">
+            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+            <i class="fas fa-download fa-stack-1x fa-inverse"></i>
+          </span>
+          <h4 class="service-heading">
+            <a href="https://www.google.com">Download</a>
+          </h4>
+          <p class="text-muted">Latest Test version (Coming Soon!)</p>
+        </div>
+        <div class="col-md-4">
+          <span class="fa-stack fa-4x">
+            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+            <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+          </span>
+          <h4 class="service-heading">
+            <a href="https://github.com/ray38/ElectroLens">Github</a>
+          </h4>
+          <p class="text-muted">Github Page</p>
+        </div>
         
-      };
+      </div>
+    </div>
+  </section>
 
-      document.getElementById('boolMolecularData').onchange = function() {
-        document.getElementById('propertyListMolecular').disabled = !this.checked;
-        if (this.checked){
-          document.getElementById('propertyListMolecularForm').style.display = "block";
-        }
-        else{
-          document.getElementById('propertyListMolecularForm').style.display = "none";
-        }
 
-        for (var i = 0; i < NUMBER3DVIEWS; i++) { 
-          var tempMolecularFormID = "view" + (i+1) + "MolecularForm";
-          if (this.checked){
-            document.getElementById(tempMolecularFormID).style.display = "block";
-          }
-          else{
-            document.getElementById(tempMolecularFormID).style.display = "none";
-          }
-        } 
+  <section class="bg-light" id="quickstart">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <h2 class="section-heading text-uppercase">Quick Start</h2>
+          <h3 class="section-subheading text-muted">
+          It's easier than you think<br><br>
+        </h3>
+        </div>
+      </div>
 
-        if (document.getElementById('boolSpatiallyResolvedData').checked  || document.getElementById('boolMolecularData').checked ){
-          document.getElementById('formSubmitButton').disabled = false;
-        }
-        else{
-          document.getElementById('formSubmitButton').disabled = true;
-        }
+      <div class="row align-items-center">
+        <div class="col-lg-12 text-center">
+          <h3>Installation (from source)</h3>
+        </div>
+        <div class="col-lg-7 mb-7">
+          <img class="card-img-top" src="img/quickstart/Installation.JPG" alt="">
+        </div>
+
+        <div class="col-lg-5 mb-5">
+          <ol>
+            <li>Install latest <a href="https://nodejs.org/en/"><strong>nodejs and npm</strong></a></li>
+            <li>Clone the <a href="https://github.com/ray38/ElectroLens"><strong>github repo</strong></a></li>
+            <li>Delete <strong>node_modules</strong> folder if exists</li>
+            <li>Install dependencies by typing <kbd>npm install</kbd></li>
+            <li>Start ElectroLens by typing <kbd>npm start</kbd></li>
+          </ol>
+        </div>
+
+        <div class="col-lg-12 text-center">
+          <h3><br><br></h3>
+        </div>
+      </div>
+
+
+      <div class="row align-items-center">
+        <div class="col-lg-12 text-center">
+          <h3>Example 1: visualize benzene electronic structure</h3>
+        </div>
+        <div class="col-lg-6 mb-6">
+          <img class="card-img-top" src="img/quickstart/electronicStructure_3Dview.JPG" alt="">
+          <div class="caption text-center">Benzene 3D View</div>
+        </div>
+        <div class="col-lg-6 mb-6">
+          <img class="card-img-top" src="img/quickstart/electronicStructure_setup.JPG" alt="">
+          <div class="caption text-center">View Configuration</div>
+        </div>
+        <div class="col-lg-12 mb-12">
+
+          <br><br>
+          <ul>
+            <li><h5>Loading the 3D view</h5>
+              <ul>
+                <li><b>With predefined configuration file</b>
+                  <ol>
+                    <li>Go to <strong>"ElectroLens/Examples/example_configuration_files/"</strong></li>
+                    <li>Open the "view_setp_example1.json" file with a text editor</li>
+                    <li>Go to line 8 ("dataFilename" for "spatiallyResolvedData") and change it to the <strong>full path</strong> of "/Examples/example_data/C6H6_electron_desnity_with_descriptors.csv"</li>
+                    <li>Start ElectroLens by typing <kbd>npm start</kbd></li>
+                    <li>In <kdb>"Upload Configuration File"</kdb> (green box), click <kdb>"Choose File"</kdb> and upload "view_setp_example1.json"</li>
+                  </ol>
+                </li>
+                <br><br>
+                <li><b>Manually define configuration</b>
+                  <ol>
+                    <li>Start ElectroLens by typing <kbd>npm start</kbd></li>
+                    <li>In <kbd>Setup configuration</kbd> (blue box) check <kbd>Spatially Resolved Data?</kbd></li>
+                    <li>In the <kbd>List of Properties for Spatially Resolved Data</kbd> text area below, enter <strong>"x, y, z, rho, gamma, epxc, deriv1, deriv2"</strong> (no quotation mark)</li>
+                    <li>In View 1, upload the <strong>"CO2_electron_desnity_with_descriptors.csv"</strong> file in "ElectroLens/Examples/example/data"</li>
+                    <li>Leave the rest as default (as shown in the picture Above), and click <kbd>Submit</kbd></li>
+                  </ol>
+                </li>
+                <br><br>
+              </ul>  
+            </li>
+            <li><h5>View Customization</h5>
+              <ol>
+                <li>Once you have the 3D view, you can customize it via the <kbd>option box</kbd> on the left</li>
+                <li>PBC: add periodic replicates</li>
+                <li>Point Cloud Control: customize point cloud view
+                  <ul>
+                    <li>Color basis - property coded by color</li>
+                    <li>Color scheme - scheme for color code</li> 
+                    <li>Density - density of the point cloud</li>
+                    <li>Size - size of each point</li>
+                    <li>Color scale min/max - adjust color scale</li>
+                    <li>Point cloud legend - adjust the legend</li>
+                  </ul>
+                </li>
+                <li>Slider Control: set the spatial ranges of data to be visualized</li>
+              </ol>
+            </li>
+          </ul>
+          
+        </div>
         
-      };
-
-      document.getElementById('boolFramedData').onchange = function() {
-        document.getElementById('frameProperty').disabled = !this.checked;
-        if (this.checked){
-          document.getElementById('framePropertyForm').style.display = "block";
-        }
-        else{
-          document.getElementById('framePropertyForm').style.display = "none";
-        }
-      };
-
-      document.getElementById('boolView1CubicCell').onchange = function() {
-        document.getElementById('view1YMax').disabled = this.checked;
-        document.getElementById('view1ZMax').disabled = this.checked;
-        document.getElementById('view1YMin').disabled = this.checked;
-        document.getElementById('view1ZMin').disabled = this.checked;
-      };
-
-      document.getElementById('view1XMin').onchange = function(){
-        if (document.getElementById('boolView1CubicCell').checked){
-          document.getElementById('view1YMin').value = document.getElementById('view1XMin').value;
-          document.getElementById('view1ZMin').value = document.getElementById('view1XMin').value;
-        }
-      }
-      document.getElementById('view1XMax').onchange = function(){
-        if (document.getElementById('boolView1CubicCell').checked){
-          document.getElementById('view1YMax').value = document.getElementById('view1XMax').value;
-          document.getElementById('view1ZMax').value = document.getElementById('view1XMax').value;
-        }
-      }
-/*
-
-      $("#textBoxA").keyup(function(){
-   $("#textBoxB").val($("#textBoxA").val());
-});
-
-$("#textBoxB").keyup(function(){
-   $("#textBoxA").val($("#textBoxB").val());
-});*/
-    </script>
-
-    <div id="container"></div>
-
-
-    <section id='spinner'></section>
-    
-    <script src="node_modules/es6/ES6.js"></script>
-    
-    <script src="js/kdtree.js"></script>
-    <script src="js/progressbar.js"></script>
-    <script src="js/three.js"></script>
-    <script src="js/effects/AnaglyphEffect.js"></script>
-    <link rel="stylesheet" type="text/css" href="js/loading-bar.css"/>
-    <script src="js/loading-bar.js"></script>
-
-    <script src='js/LineSegmentsGeometry.js'></script>
-    <script src='js/LineGeometry.js'></script>
-    <script src='js/WireframeGeometry2.js'></script>
-    <script src='js/LineMaterial.js'></script>
-    <script src='js/LineSegments2.js'></script>
-    <script src='js/Line2.js'></script>
-    <script src='js/Wireframe.js'></script>
-
-    <script src="js/jQuery.js"></script>
-    <script src="./node_modules/papaparse/papaparse.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
-    <script src="js/Detector.js"></script>
-    <script src="js/libs/stats.min.js"></script>
-    <script src="./MultiviewControl/customizeLut.js"></script>
-    <script src="js/controls/OrbitControls.js"></script>
-    <script src="js/controls/TrackballControls.js"></script>
-    <script src="js/libs/dat.gui.js"></script>
-    <script src="D3js/d3.min.js"></script>
-    <script src="D3js/d3-queue.v3.min.js"></script>
-    
-    <script src="3DViews/Utilities.js"></script>
-
-
-    <script type="x-shader/x-vertex" id="vertexshader">
-      attribute float size;
-      attribute vec3 customColor;
-      attribute float alpha;
-
-        varying float vAlpha;
-      varying vec3 vColor;
-
-      void main() {
-        vColor = customColor;
-        vAlpha = alpha;
-        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-        gl_PointSize = size * ( 300.0 / -mvPosition.z );
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    </script>
-
-    <script type="x-shader/x-fragment" id="fragmentshader">
-      uniform vec3 color;
-      uniform sampler2D texture;
-
-      varying vec3 vColor;
-      varying float vAlpha;
-
-      void main() {
-        gl_FragColor = vec4( color * vColor, vAlpha );
-        gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
-      }
-    </script>
-    <script type="x-shader/x-vertex" id="vertexshader_molecule">
-      attribute float size;
-      attribute vec3 customColor;
-
-      varying vec3 vColor;
-
-      void main() {
-        vColor = customColor;
-        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-        gl_PointSize = size * ( 300.0 / -mvPosition.z );
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    </script>
-
-    <script type="x-shader/x-fragment" id="fragmentshader_molecule">
-      uniform vec3 color;
-      uniform sampler2D texture;
-
-      varying vec3 vColor;
-
-      void main() {
-        gl_FragColor = vec4( color * vColor, 1.0 );
-        gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
-        if ( gl_FragColor.a < ALPHATEST ) discard;
-      }
-    </script>
+        <div class="col-lg-12 text-center">
+          <h3><br><br></h3>
+        </div>
+      </div>
 
 
 
-    <script src="2D3D_connection_heatmap_test.js"></script>
-    <script>
-      electroLensMain();
-    </script>
- 
+      <div class="row align-items-center justify-content-md-center">
+        <div class="col-lg-12 text-center">
+          <h3>Example 2: 2D Plots and Selection</h3>
+        </div>
+
+        <div class="col-lg-6 mb-6">
+          <img class="card-img-top" src="img/quickstart/electronicStructure_2DSelection.JPG" alt="">
+          <div class="caption text-center">Benzene 2D plots and selection</div>
+        </div>
+
+        <div class="col-lg-12 mb-12">
+
+          <br><br>
+          <ul>
+            <li><h5>Add 2D plots</h5>
+              <ul>
+                <li><b>On the fly</b>
+                  <ol>
+                    <li>Start ElectroLens and load the 3D view as in Example 1</li>
+                    <li>Simply press <kbd>a</kbd> or <kbd>+</kbd> to add a 2D plot</li>
+                    <li>Adjust the X, Y axis properties and scales via the option box of the plot</li>
+                    <li>Remember to click <kbd>Update Plot</kbd> to reflect the changes</li>
+                  </ol>
+                </li>
+                <br><br>
+                <li><b>Pre-defined configuration file</b>
+                  <ol>
+                    <li>Go to <strong>"ElectroLens/Examples/example_configuration_files/"</strong></li>
+                    <li>Open the "view_setp_example2.json" file with a text editor</li>
+                    <li>Go to line 8 ("dataFilename" for "spatiallyResolvedData") and change it to the <strong>full path</strong> of that file (as in example 1)</li>
+                    <li>Go to line 14 - 17 to change the X, Y axis properties and X, Y axis scales respectively</li>
+                    <li>Start ElectroLens by typing <kbd>npm start</kbd></li>
+                    <li>In <kdb>"Upload Configuration File"</kdb> (green box), click <kdb>"Choose File"</kdb> and upload "view_setp_example2.json"</li>
+                  </ol>
+                </li>
+                <br><br>
+              </ul>  
+            </li>
+            <li><h5>2D plots Customization</h5>
+              <ol>
+                <li>Once you have the 2D plots, you can customize them via the option boxes of each plot</li>
+                <li>Plot Setting
+                  <ul>
+                    <li>Resolution - resolution of the heat map</li>
+                    <li>Update Plot - update the 2D plot. <strong>*** MUST CLICK to reflect any changes in "Plot Setting" ***</strong></li>
+                    <li>X - X axis property</li>
+                    <li>X - X axis scale</li>
+                    <li>Y - Y axis property</li>
+                    <li>Y - Y axis scale</li>
+                    <li>Select All - select all data points</li>
+                    <li>Deselect All - deselect all data points</li>
+                  </ul>
+                </li>
+                <li>View Control: change the color scheme and point sizes of the plot</li>
+              </ol>
+              <br><br>
+            </li>
+            <li><h5>Selection</h5>
+              To select points on the 2D plot and show the corresponding region in the 3D view
+              <ol>
+                <li>Deselect all datapoints, the 3D view should now be blank</li>
+                <li>In the <strong>option box</strong> of 2D plot, go to <kbd>Selection</kbd> and check <kbd>with plane</kbd> (or press <kbd>1</kbd> for shortcut)</li>
+                <li>Drag seletion box on the 2D plot to selection datapoints</li>
+                <li>Try with the other option: Select <kbd>with brush</kbd> (press <kbd>2</kbd> for shortcut)</li>
+              </ol>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-12 text-center">
+          <h3><br><br></h3>
+        </div>
+      </div>
+
+
+
+       <div class="row align-items-center">
+        <div class="col-lg-12 text-center">
+          <h3>Example 3: visualize MD trajectory of 15 water</h3>
+        </div>
+        <div class="col-lg-6 mb-6">
+          <img class="card-img-top" src="img/quickstart/MD_3Dview.JPG" alt="">
+          <div class="caption text-center">Water cluster 3D View</div>
+        </div>
+        <div class="col-lg-6 mb-6">
+          <img class="card-img-top" src="img/quickstart/MD_setup.JPG" alt="">
+          <div class="caption text-center">View Configuration</div>
+        </div>
+        <div class="col-lg-12 mb-12">
+
+          <br><br>
+          <ul>
+            <li><h5>Loading the 3D view</h5>
+              <ul>
+                <li><b>With predefined configuration file</b>
+                  <ol>
+                    <li>Go to <strong>"ElectroLens/Examples/example_configuration_files/"</strong></li>
+                    <li>Open the <strong>"view_setp_example3.json"</strong> file with a text editor</li>
+                    <li>Go to line 7 ("dataFilename" for "moleculeData") and change it to the full path of that file</li>
+                    <li>Start ElectroLens by typing <kbd>npm start</kbd></li>
+                    <li>In <kdb>"Upload Configuration File"</kdb> (green box), click <kdb>"Choose File"</kdb> and upload "view_setp_example3.json"</li>
+                  </ol>
+                </li>
+                <br><br>
+                <li><b>Manually define configuration</b>
+                  <ol>
+                    <li>Start ElectroLens by typing <kbd>npm start</kbd></li>
+                    <li>In <kbd>Setup configuration</kbd> (blue box) check <kbd>Molecular Data?</kbd> and <kbd>Framed Data?</kbd></li>
+                    <li>In the <kbd>List of Properties for Molecular Data</kbd> text area below, enter <strong>"x, y, z, atom, G1, G2, G3, G4, G5, G6, frame"</strong> (no quotation mark)</li>
+                    <li>In View 1, upload the <strong>15_water_MD_with_Gaussian_fingerprints.csv</strong> file in "ElectroLens/Examples/example/data"</li>
+                    <li>Change the system dimemsion to be 0 for <kbd>xmin</kbd>, <kbd>ymin</kbd>, <kbd>zmin</kbd> and 25 for <kbd>xmax</kbd>, <kbd>ymax</kbd>, <kbd>zmax</kbd> </li>
+                    <li>Leave the rest as default (as shown in the picture Above), and click <kbd>Submit</kbd></li>
+                  </ol>
+                </li>
+                <br><br>
+              </ul>  
+            </li>
+            <li><h5>View Customization</h5>
+              <ol>
+                <li>Once you have the 3D view, you can customize it via the <strong>option box</strong> on the left</li>
+                <li>Drag the "Current Frame" bar in "View Control" to view different images in the trajectory</li>
+                <li>PBC: add periodic replicates</li>
+                <li>Molecule Control: customize point cloud view
+                  <ul>
+                    <li>Atom style - style for drawing atoms (sprite is the much cheaper option)</li>
+                    <li>Bond style - style for drawing atoms (line is the much cheaper option)</li>
+                    <li>Color basis - property coded by color</li>
+                    <li>Color scale min/max - adjust color scale</li>
+                    <li>Size basis - property coded by atom size</li>
+                    <li>Size scale min/max - adjust color atom size</li>
+                    <li>Bond max/min - the max/min distance to draw bonds between 2 atoms</li>
+                    <li>Molecule legend - adjust the legend</li>
+                  </ul>
+                </li>
+              </ol>
+            </li>
+          </ul>
+          
+        </div>
+        
+        <div class="col-lg-12 text-center">
+          <h3><br><br></h3>
+        </div>
+      </div>
+
+
+
+
+      <div class="row align-items-center justify-content-md-center">
+        <div class="col-lg-12 text-center">
+          <h3>Example 4: 2D Plots and Selection for Molecular Data</h3>
+        </div>
+
+        <div class="col-lg-6 mb-6">
+          <img class="card-img-top" src="img/quickstart/MD_2DSelection.JPG" alt="">
+          <div class="caption text-center">Water cluster 2D plots and selection</div>
+        </div>
+
+        <div class="col-lg-12 mb-12">
+
+          <br><br>
+          <ul>
+            <li><h5>Add 2D plots</h5>
+              <ul>
+                <li><b>On the fly</b>
+                  <ol>
+                    <li>Start ElectroLens and load the 3D view as in Example 3</li>
+                    <li>Simply press <kbd>a</kbd> or <kbd>+</kbd> to add a 2D plot</li>
+                    <li>Adjust the X, Y axis properties and scales via the option box of the plot</li>
+                    <li>Remember to click <kbd>Update Plot</kbd> to reflect the changes</li>
+                  </ol>
+                </li>
+                <br><br>
+              </ul>  
+            </li>
+            <li><h5>2D plots Customization</h5>
+              <ol>
+                <li>Once you have the 2D plots, you can customize them via the option boxes of each plot</li>
+                <li>Plot Setting
+                  <ul>
+                    <li>Resolution - resolution of the heat map</li>
+                    <li>Update Plot - update the 2D plot. <strong>*** MUST CLICK to reflect any changes in "Plot Setting" ***</strong></li>
+                    <li>X - X axis property</li>
+                    <li>X - X axis scale</li>
+                    <li>Y - Y axis property</li>
+                    <li>Y - Y axis scale</li>
+                    <li>Select All - select all data points</li>
+                    <li>Deselect All - deselect all data points</li>
+                  </ul>
+                </li>
+                <li>View Control: change the color scheme and point sizes of the plot</li>
+              </ol>
+              <br><br>
+            </li>
+            <li><h5>Selection</h5>
+              To select points on the 2D plot and show the corresponding region in the 3D view
+              <ol>
+                <li>Deselect all datapoints, the 3D view should now be blank</li>
+                <li>In the <strong>option box</strong> of 2D plot, go to <kbd>Selection</kbd> and check <kbd>with plane</kbd> (or press <kbd>1</kbd> for shortcut)</li>
+                <li>Drag seletion box on the 2D plot to selection datapoints</li>
+                <li>Try with the other option: Select <kbd>with brush</kbd> (press <kbd>2</kbd> for shortcut)</li>
+              </ol>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-12 text-center">
+          <h3><br><br></h3>
+        </div>
+      </div>
+
+
+      <div class="row align-items-center justify-content-md-center">
+        <div class="col-lg-12 text-center">
+          <h3>Data Structure</h3>
+        </div>
+
+        
+
+        <div class="col-lg-12 mb-12">
+
+          <br><br>
+          <h6>ElectroLens uses <kbd>csv</kbd> (comma separated value) as the default file type for data</h6>
+          <h6>Depend on the type of descriptors (electronic structure or atomistic), slightly different properties are needed</h6>
+          <h6>To visualize framed data (trajectories for atoms or electronic structures), one extra property is needed</h6>
+          <br>
+          <ul>
+            <li><h5>Electronic Structure Data</h5>
+                <img class="card-img-top" src="img/quickstart/electronicStructure_datafile.JPG" alt="">
+                <div class="caption text-center">Data structure for electronic structure data</div>
+              <ul>
+                <li>Each row corresponds to a data point, and each column corresponds to a property</li>
+                <li>Properties <kbd>x</kbd>, <kbd>y</kbd>, <kbd>z</kbd> and a property that corresponds to <kbd>[density]</kbd> (in this case "rho") are needed </li>
+              </ul>
+            </li>
+            <br>
+            <li><h5>Atomistic Data</h5>
+                <img class="card-img-top" src="img/quickstart/atomistic_datafile.JPG" alt="">
+                <div class="caption text-center">Data structure for atomistic data</div>
+              <ul>
+                <li>Each row corresponds to a data point, and each column corresponds to a property</li>
+                <li>Properties <kbd>x</kbd>, <kbd>y</kbd>, <kbd>z</kbd> and <kbd>atom</kbd> (symbol for the corresponding element) are needed </li>
+              </ul>
+            </li>
+            <br>
+            <li><h5>Framed Data</h5>
+                <img class="card-img-top" src="img/quickstart/MD_datafile.JPG" alt="">
+                <div class="caption text-center">Data structure for framed data</div>
+              <ul>
+                <li>If the data to be visualized is framed (e.g. trajectory), simply add a column that corresponds to the <kbd>[frame number]</kbd> (in this case "frame")</li>
+                <li>You can give it any name, just remember to specify it on the configuration form</li>
+                <li>Works not only for atomistic trajectories, but also electronic structure trajectories</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="col-lg-12 text-center">
+          <h3><br><br></h3>
+        </div>
+      </div>
+
+
+<!--
+
+      <div class="row align-items-center">
+        <div class="col-lg-12 text-center">
+          <h3>Example 1: visualize benzene electronic structure</h3>
+        </div>
+        <div class="col-lg-6 mb-6">
+          <ul>
+            <li>With predefined configuration file
+              <ol>
+                <li>Go to "ElectroLens/Examples/example_configuration_files/"</li>
+                <li>Open the "view_setp_example1.json" file with a text editor</li>
+                <li>Go to line 8 ("dataFilename" for "spatiallyResolvedData") and change it to the full path of that file</li>
+                <li>Start ElectroLens</li>
+                <li>In "Upload Configuration File" (green box), click "Choose File" and upload "view_setp_example1.json"</li>
+              </ol>
+            </li>
+            <li>Manually define configuration
+              <ol>
+                <li>Start ElectroLens</li>
+                <li>In "Setup configuration" (blue box) check "Spatially Resolved Data?"</li>
+                <li>In the "List of Properties for Spatially Resolved Data" text area below, enter "x, y, z, rho, gamma, epxc, deriv1, deriv2</li>
+                <li>In View 1, upload the "CO2_electron_desnity_with_descriptors.csv" file in "ElectroLens/Examples/example/data"</li>
+                <li>Leave the rest as default (as shown in the picture Below), and click "Submit"</li>
+              </ol>
+            </li>
+          </ul>
+          
+        </div>
+
+        <div class="col-lg-6 mb-6">
+          <img class="card-img-top" src="img/quickstart/electronicStructure_setup.JPG" alt="">
+        </div>
+
+        <div class="col-lg-12 text-center">
+          <h3><br><br></h3>
+        </div>
+      </div>
+
+
+
+      <div class="row align-items-center">
+        <div class="col-lg-12 text-center">
+          <h3>Example with MD trajectory</h3>
+        </div>
+        <div class="col-lg-5 mb-5">
+          <ol>
+            <li>Install nodejs and npm</li>
+            <li>Clone the github repo</li>
+            <li>Delete node_modules folder if exists</li>
+            <li>Install dependencies by typing npm install</li>
+            <li>Start ElectroLens by typing npm start</li>
+          </ol>
+        </div>
+
+        <div class="col-lg-7 mb-7">
+          <img class="card-img-top" src="img/quickstart/MD_setup.JPG" alt="">
+        </div>
+
+        <div class="col-lg-12 text-center">
+          <h3><br><br></h3>
+        </div>
+      </div>
+-->
+
+    </div>
+  </section>
+
+
+
+
+
+  <section id="publications">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <h2 class="section-heading text-uppercase">Publications</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+          <div class="card h-100">
+            <a href="https://arxiv.org/abs/1603.04339"><img class="card-img-top" src="img/publications/paper1.jpg" alt=""></a>
+            <div class="card-body">
+              <h4 class="card-title">
+                <a href="https://arxiv.org/abs/1603.04339">Short paper</a>
+              </h4>
+              <p class="card-text">SPARC: Accurate and efficient finite-difference formulation and parallel implementation of Density Functional Theory: Extended systems</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Team -->
+  <section class="bg-light" id="team">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <h2 class="section-heading text-uppercase">Team</h2>
+          <h3 class="section-subheading text-muted">Meet our developers</h3>
+        </div>
+      </div>
+      <div class="row">
+
+        <div class="col-sm-4">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="img/PIs/medford-small.jpg" alt="">
+            <h4>Dr. Andrew J. Medford</h4>
+            <p class="text-muted">Principal Investigator<br>Georgia Institute of Technology</p>
+            <p class="text-muted"><a href="https://www.medford.chbe.gatech.edu/">https://www.medford.chbe.gatech.edu</a></p>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="img/PIs/chau-small.jpg" alt="">
+            <h4>Dr. Duen Horng (Polo) Chau</h4>
+            <p class="text-muted">Principal Investigator<br>Georgia Institute of Technology</p>
+            <p class="text-muted"><a href="https://poloclub.github.io/">https://poloclub.github.io/</a></p>
+          </div>
+        </div>
+        
+        
+        <div class="col-sm-4">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="img/team/lei.jpg" alt="">
+            <h4>Xiangyun (Ray) Lei</h4>
+            <p class="text-muted">Lead Developer<br>Georgia Institute of Technology</p>
+            <ul class="list-inline social-buttons">
+              <li class="list-inline-item">
+                <a href="https://github.com/ray38">
+                  <i class="fab fa-github"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="https://www.linkedin.com/in/xiangyun-lei-1808513a/">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        
+      </div>
+    </div>
+  </section>
+
+  <section id="software">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <h2 class="section-heading text-uppercase">Related Software</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="card h-100">
+            <a href="https://www.sparc-x.com/"><img class="card-img-top" src="img/softwares/sparc.png" alt=""></a>
+            <div class="card-body">
+              <h4 class="card-title">
+                <a href="https://www.sparc-x.com/">SPARC-X</a>
+              </h4>
+              <p class="card-text">SPARC</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+          <div class="card h-100">
+            <a href="https://amp.readthedocs.io/en/latest/"><img class="card-img-top" src="img/softwares/amp.jpg" alt=""></a>
+            <div class="card-body">
+              <h4 class="card-title">
+                <a href="https://amp.readthedocs.io/en/latest/">AMP</a>
+              </h4>
+              <p class="card-text">Atomistic Machine-learning Package</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clients -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <h2 class="section-heading text-uppercase">Sponsors</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-sm-6 mb-4">
+        </div>
+                
+        <div class="col-lg-4 col-sm-6 mb-4">
+          <a href="#">
+            <img class="img-fluid d-block mx-auto" src="img/sponsors/gatech.png" alt="">
+          </a>
+        </div>
+        <div class="col-lg-4 col-sm-6 mb-4">
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <span class="copyright">Copyright &copy; ElectroLens 2019</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="js/agency.min.js"></script>
+
 </body>
+
 </html>
